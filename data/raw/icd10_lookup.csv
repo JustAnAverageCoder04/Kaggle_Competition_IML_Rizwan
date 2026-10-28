@@ -1,0 +1,83 @@
+icd10_code,description,chapter,chronic_flag
+I50.9,"Heart failure, unspecified",Circulatory,1
+I50.22,Chronic systolic heart failure,Circulatory,1
+I50.23,Acute on chronic systolic heart failure,Circulatory,0
+I50.32,Chronic diastolic heart failure,Circulatory,1
+I50.33,Acute on chronic diastolic heart failure,Circulatory,0
+I11.0,Hypertensive heart disease with heart failure,Circulatory,1
+I10,Essential hypertension,Circulatory,1
+I21.4,Non-ST elevation myocardial infarction,Circulatory,0
+I21.3,ST elevation myocardial infarction of unspecified site,Circulatory,0
+I21.9,"Acute myocardial infarction, unspecified",Circulatory,0
+I25.10,Atherosclerotic heart disease of native coronary artery,Circulatory,1
+I48.91,Unspecified atrial fibrillation,Circulatory,1
+I48.20,"Chronic atrial fibrillation, unspecified",Circulatory,1
+I48.0,Paroxysmal atrial fibrillation,Circulatory,1
+I47.1,Supraventricular tachycardia,Circulatory,0
+I63.9,"Cerebral infarction, unspecified",Circulatory,0
+Z86.73,Personal history of TIA and cerebral infarction,Health status/services,1
+G45.9,"Transient cerebral ischemic attack, unspecified",Nervous system,0
+G40.909,"Epilepsy, unspecified, not intractable",Nervous system,1
+G93.40,"Encephalopathy, unspecified",Nervous system,0
+J44.1,COPD with acute exacerbation,Respiratory,0
+J44.0,COPD with acute lower respiratory infection,Respiratory,0
+J44.9,"COPD, unspecified",Respiratory,1
+J18.9,"Pneumonia, unspecified organism",Respiratory,0
+J15.9,Unspecified bacterial pneumonia,Respiratory,0
+J13,Pneumonia due to Streptococcus pneumoniae,Respiratory,0
+J45.909,"Unspecified asthma, uncomplicated",Respiratory,1
+A41.9,"Sepsis, unspecified organism",Infectious diseases,0
+N39.0,"Urinary tract infection, site not specified",Genitourinary,0
+L03.115,Cellulitis of right lower limb,Skin,0
+E11.65,Type 2 diabetes mellitus with hyperglycemia,Endocrine/metabolic,1
+E11.10,Type 2 diabetes mellitus with ketoacidosis without coma,Endocrine/metabolic,0
+E11.69,Type 2 diabetes mellitus with other specified complication,Endocrine/metabolic,1
+E11.9,Type 2 diabetes mellitus without complications,Endocrine/metabolic,1
+E11.22,Type 2 diabetes mellitus with diabetic chronic kidney disease,Endocrine/metabolic,1
+K92.2,"Gastrointestinal hemorrhage, unspecified",Digestive,0
+K57.32,Diverticulitis of large intestine without perforation or abscess,Digestive,0
+K85.90,Acute pancreatitis without necrosis or infection,Digestive,0
+K80.00,Calculus of gallbladder with acute cholecystitis,Digestive,0
+K35.80,Unspecified acute appendicitis,Digestive,0
+K56.609,Unspecified intestinal obstruction,Digestive,0
+S72.001A,"Fracture of unspecified part of neck of right femur, initial encounter",Injury,0
+M17.11,"Unilateral primary osteoarthritis, right knee",Musculoskeletal,1
+M16.11,"Unilateral primary osteoarthritis, right hip",Musculoskeletal,1
+C34.90,Malignant neoplasm of unspecified part of bronchus or lung,Neoplasms,1
+C50.919,Malignant neoplasm of unspecified site of female breast,Neoplasms,1
+C18.9,"Malignant neoplasm of colon, unspecified",Neoplasms,1
+C25.9,"Malignant neoplasm of pancreas, unspecified",Neoplasms,1
+C80.1,"Malignant (primary) neoplasm, unspecified",Neoplasms,1
+C79.9,Secondary malignant neoplasm of unspecified site,Neoplasms,1
+N17.9,"Acute kidney failure, unspecified",Genitourinary,0
+E87.1,Hypo-osmolality and hyponatremia,Endocrine/metabolic,0
+E86.0,Dehydration,Endocrine/metabolic,0
+N18.30,"Chronic kidney disease, stage 3 unspecified",Genitourinary,1
+N18.4,"Chronic kidney disease, stage 4",Genitourinary,1
+N18.9,"Chronic kidney disease, unspecified",Genitourinary,1
+R07.9,"Chest pain, unspecified",Symptoms/signs,0
+R55,Syncope and collapse,Symptoms/signs,0
+R10.9,Unspecified abdominal pain,Symptoms/signs,0
+R42,Dizziness and giddiness,Symptoms/signs,0
+R06.02,Shortness of breath,Symptoms/signs,0
+F03.90,Unspecified dementia without behavioral disturbance,Mental/behavioral,1
+F32.9,"Major depressive disorder, single episode, unspecified",Mental/behavioral,1
+E66.9,"Obesity, unspecified",Endocrine/metabolic,1
+E78.5,"Hyperlipidemia, unspecified",Endocrine/metabolic,1
+K21.9,Gastro-esophageal reflux disease without esophagitis,Digestive,1
+E03.9,"Hypothyroidism, unspecified",Endocrine/metabolic,1
+D64.9,"Anemia, unspecified",Blood/Neoplasms,0
+E87.6,Hypokalemia,Endocrine/metabolic,0
+Z79.01,Long term (current) use of anticoagulants,Health status/services,1
+Z72.0,Tobacco use,Health status/services,1
+R41.0,"Disorientation, unspecified",Symptoms/signs,0
+L89.90,"Pressure ulcer of unspecified site, unspecified stage",Skin,0
+W19.XXXA,"Unspecified fall, initial encounter",External causes,0
+G47.33,Obstructive sleep apnea,Nervous system,1
+M10.9,"Gout, unspecified",Musculoskeletal,1
+Z91.19,Noncompliance with other medical treatment and regimen,Health status/services,0
+F17.210,"Nicotine dependence, cigarettes, uncomplicated",Mental/behavioral,1
+Z79.4,Long term (current) use of insulin,Health status/services,1
+K59.00,"Constipation, unspecified",Digestive,0
+G89.29,Other chronic pain,Nervous system,1
+Z79.899,Other long term (current) drug therapy,Health status/services,1

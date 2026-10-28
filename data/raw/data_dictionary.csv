@@ -1,0 +1,76 @@
+table,column,description,notes
+train,encounter_id,Unique identifier of the index hospital stay,Join key to all encounter-level tables
+train,readmit_30d,TARGET: 1 if the patient had an unplanned readmission within 30 days of discharge; 0 otherwise,Binary; roughly 10% positive
+test,encounter_id,Unique identifier of the index hospital stay to predict,No target provided
+sample_submission,encounter_id,Unique identifier of the index hospital stay,One row per test encounter
+sample_submission,readmit_30d,Predicted probability of 30-day readmission,Submit a probability between 0 and 1 (not a hard 0/1 label)
+patients,patient_id,Unique patient identifier,Join key to index_encounters and prior_utilization; one row per patient
+patients,birth_year,Year of birth,
+patients,sex,Recorded sex,
+patients,race_ethnicity,Recorded race/ethnicity,
+patients,language,Preferred language,
+patients,marital_status,Marital status at registration,
+patients,insurance_type,Primary payer/insurance category,
+patients,zip3,First three digits of residential ZIP code,
+patients,deprivation_index,Area-level social deprivation score (0-100),Higher means more deprived
+index_encounters,encounter_id,Unique identifier of the index hospital stay,Primary key; one row per stay
+index_encounters,patient_id,Patient identifier,Foreign key to patients
+index_encounters,hospital_id,Hospital where the stay occurred,Foreign key to hospitals
+index_encounters,admit_dt,Admission date and time,
+index_encounters,discharge_dt,Discharge date and time,Length of stay = discharge_dt minus admit_dt
+index_encounters,admission_type,Urgency category of admission,
+index_encounters,admission_source,Where the patient came from before admission,
+index_encounters,service_line,Clinical service responsible for the stay,
+index_encounters,discharge_disposition,Where the patient went after discharge,
+index_encounters,attending_id,Identifier of the attending physician,
+index_encounters,attending_specialty,Specialty of the attending physician,
+index_encounters,admit_weight_kg,Patient weight at admission in kilograms,
+diagnoses,encounter_id,Stay identifier,Foreign key to index_encounters; many rows per stay
+diagnoses,seq,Order of the diagnosis within the stay,1 = listed first
+diagnoses,icd10_code,ICD-10-CM diagnosis code,Join to icd10_lookup
+diagnoses,present_on_admission,Whether the condition was present at admission,
+diagnoses,is_primary,1 if this is the principal diagnosis of the stay,
+procedures,encounter_id,Stay identifier,Foreign key to index_encounters; zero or more rows per stay
+procedures,code,Procedure code,
+procedures,code_type,Coding system of the procedure code,
+procedures,proc_dt,Date the procedure was performed,
+lab_results,encounter_id,Stay identifier,Foreign key to index_encounters; many rows per stay
+lab_results,lab_code,LOINC-style code identifying the test,
+lab_results,lab_name,Name of the test,
+lab_results,collected_dt,Date and time the specimen was collected,
+lab_results,value,Numeric result,Interpret together with the unit column
+lab_results,unit,Unit of measure as reported by the source system,
+lab_results,abnormal_flag,Reference-range flag (L = low; N = normal; H = high),
+vitals,encounter_id,Stay identifier,Foreign key to index_encounters; many rows per stay
+vitals,charttime,Date and time the measurement was charted,
+vitals,vital_type,Type of measurement,HR (beats/min); SBP and DBP (mmHg); RR (breaths/min); SPO2 (%); TEMP (body temperature)
+vitals,value,Numeric measurement,No unit column is provided
+medications,encounter_id,Stay identifier,Foreign key to index_encounters; many rows per stay
+medications,drug_name,Name of the medication as recorded,
+medications,drug_class,Therapeutic class of the medication,
+medications,route,Route of administration,PO = oral; IV = intravenous; SC = subcutaneous; INH = inhaled
+medications,start_dt,Date the medication order started,Format YYYYMMDD
+medications,stop_dt,Date the medication was stopped,Blank if no stop date was recorded; format YYYYMMDD
+medications,continued_at_discharge,1 if the medication was continued after discharge,
+unit_transfers,encounter_id,Stay identifier,Foreign key to index_encounters; one or more rows per stay
+unit_transfers,unit,Hospital unit the patient was in,ED = emergency department; WARD = general ward; ICU = intensive care; STEPDOWN = intermediate care
+unit_transfers,in_dt,Date and time patient entered the unit,
+unit_transfers,out_dt,Date and time patient left the unit,
+prior_utilization,patient_id,Patient identifier,Foreign key to patients; many rows per patient
+prior_utilization,visit_dt,Date of an earlier healthcare visit,Always before the index admission
+prior_utilization,visit_type,Type of earlier visit,ED = emergency department; IP = inpatient; OP = outpatient
+prior_utilization,hospital_id,Hospital where that visit occurred,Foreign key to hospitals
+discharge_planning,encounter_id,Stay identifier,Foreign key to index_encounters; at most one row per stay
+discharge_planning,followup_scheduled_days,Days between discharge and the scheduled follow-up appointment,
+discharge_planning,home_health_referral,Whether a home health referral was made,
+discharge_planning,med_reconciliation_done,Whether medication reconciliation was completed at discharge,
+discharge_planning,education_done,Whether patient discharge education was completed,
+hospitals,hospital_id,Unique hospital identifier,Primary key
+hospitals,bed_size,Licensed bed capacity,
+hospitals,teaching_flag,1 if teaching hospital,
+hospitals,urban_rural,Setting of the hospital,
+hospitals,ownership,Ownership type,
+icd10_lookup,icd10_code,ICD-10-CM code,Canonical form with decimal point
+icd10_lookup,description,Text description of the diagnosis,
+icd10_lookup,chapter,ICD-10 chapter grouping,
+icd10_lookup,chronic_flag,1 if the condition is typically chronic,
