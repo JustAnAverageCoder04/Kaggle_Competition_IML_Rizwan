@@ -16,17 +16,33 @@ encounters_df = pd.read_csv(os.path.join(RAW_DIR, "index_encounters.csv"))
 patients_df = pd.read_csv(os.path.join(RAW_DIR, "patients.csv"))
 hospitals_df = pd.read_csv(os.path.join(RAW_DIR, "hospitals.csv"))
 
-# 1. Explicitly drop text/name/timestamp/description columns by name to prevent bloat
-print("Dropping non-informative schema text/timestamp columns...")
+# 1. Extract Length of Stay (LOS) BEFORE dropping timestamps
+print("Calculating Length of Stay...")
+if "admission_date" in encounters_df.columns and "discharge_date" in encounters_df.columns:
+    encounters_df["admission_date"] = pd.to_datetime(encounters_df["admission_date"], errors="coerce")
+    encounters_df["discharge_date"] = pd.to_datetime(encounters_df["discharge_date"], errors="coerce")
+    encounters_df["length_of_stay_days"] = (encounters_df["discharge_date"] - encounters_df["admission_date"]).dt.total_seconds() / 86400.0
+else:
+    encounters_df["length_of_stay_days"] = 0.0
+
+# 2. Compute Hospital Patient Volume / Institutional Load
+print("Computing hospital-level features...")
+hospital_vol = encounters_df.groupby("hospital_id").size().reset_index(name="hospital_encounter_volume")
+hospitals_df = hospitals_df.merge(hospital_vol, on="hospital_id", how="left")
+
+# Drop remaining non-informative text/timestamp columns safely
 patients_df = patients_df.drop(columns=[col for col in patients_df.columns if any(w in col.lower() for w in ["name", "date", "time", "address", "phone"])], errors="ignore")
 hospitals_df = hospitals_df.drop(columns=[col for col in hospitals_df.columns if any(w in col.lower() for w in ["name", "address", "city", "state"])], errors="ignore")
 encounters_df = encounters_df.drop(columns=[col for col in encounters_df.columns if any(w in col.lower() for w in ["date", "time", "timestamp", "desc", "text"])], errors="ignore")
 
-# 2. Aggregate Child Tables strictly to counts/metrics (No raw text strings brought in)
-print("Aggregating multi-row child tables...")
+# 3. Aggregate Child Tables with Statistical Summaries & Missing Flags
+print("Aggregating multi-row child tables and building missingness flags...")
 
 diagnoses_df = pd.read_csv(os.path.join(RAW_DIR, "diagnoses.csv"))
-diag_agg = diagnoses_df.groupby("encounter_id").size().reset_index(name="total_diagnoses")
+diag_agg = diagnoses_df.groupby("encounter_id").agg(
+    total_diagnoses=("icd10_code", "count"),
+    unique_diagnoses=("icd10_code", "nunique")
+).reset_index()
 
 procedures_df = pd.read_csv(os.path.join(RAW_DIR, "procedures.csv"))
 proc_agg = procedures_df.groupby("encounter_id").size().reset_index(name="total_procedures")
@@ -35,20 +51,36 @@ meds_df = pd.read_csv(os.path.join(RAW_DIR, "medications.csv"))
 meds_agg = meds_df.groupby("encounter_id").size().reset_index(name="total_medications")
 
 labs_df = pd.read_csv(os.path.join(RAW_DIR, "lab_results.csv"))
-labs_agg = labs_df.groupby("encounter_id").size().reset_index(name="total_lab_tests")
+if "result_value" in labs_df.columns:
+    labs_agg = labs_df.groupby("encounter_id").agg(
+        total_labs=("result_value", "count"),
+        mean_lab_value=("result_value", "mean"),
+        max_lab_value=("result_value", "max"),
+        min_lab_value=("result_value", "min")
+    ).reset_index()
+else:
+    labs_agg = labs_df.groupby("encounter_id").size().reset_index(name="total_labs")
 
 vitals_df = pd.read_csv(os.path.join(RAW_DIR, "vitals.csv"))
-vitals_agg = vitals_df.groupby("encounter_id").size().reset_index(name="total_vitals_recorded")
+if "vital_value" in vitals_df.columns:
+    vitals_agg = vitals_df.groupby("encounter_id").agg(
+        total_vitals=("vital_value", "count"),
+        mean_vital=("vital_value", "mean"),
+        max_vital=("vital_value", "max"),
+        min_vital=("vital_value", "min")
+    ).reset_index()
+else:
+    vitals_agg = vitals_df.groupby("encounter_id").size().reset_index(name="total_vitals")
 
 transfers_df = pd.read_csv(os.path.join(RAW_DIR, "unit_transfers.csv"))
 transfers_agg = transfers_df.groupby("encounter_id").size().reset_index(name="total_unit_transfers")
 
-# 3. Aggregate Prior Utilization by Patient Grain
-print("Aggregating prior utilization...")
 prior_df = pd.read_csv(os.path.join(RAW_DIR, "prior_utilization.csv"))
-prior_agg = prior_df.groupby("patient_id").size().reset_index(name="total_prior_visits")
+prior_agg = prior_df.groupby("patient_id").agg(
+    total_prior_visits=("patient_id", "count")
+).reset_index()
 
-# 4. Merge All Tables onto Index Encounters
+# 4. Merge All Tables into Master Table
 print("Merging tables into master table...")
 master_df = encounters_df.merge(patients_df, on="patient_id", how="left")
 master_df = master_df.merge(hospitals_df, on="hospital_id", how="left")
@@ -60,14 +92,21 @@ master_df = master_df.merge(vitals_agg, on="encounter_id", how="left")
 master_df = master_df.merge(transfers_agg, on="encounter_id", how="left")
 master_df = master_df.merge(prior_agg, on="patient_id", how="left")
 
-# 5. Handle Missing Values in Counts
-count_cols = [
-    "total_diagnoses", "total_procedures", "total_medications", 
-    "total_lab_tests", "total_vitals_recorded", "total_unit_transfers", "total_prior_visits"
+# 5. Fill Missing Values & Create Explicit Missingness Indicator Flags
+numeric_aggregates = [
+    "total_diagnoses", "unique_diagnoses", "total_procedures", "total_medications", 
+    "total_labs", "mean_lab_value", "max_lab_value", "min_lab_value",
+    "total_vitals", "mean_vital", "max_vital", "min_vital", 
+    "total_unit_transfers", "total_prior_visits", "length_of_stay_days"
 ]
-master_df[count_cols] = master_df[count_cols].fillna(0)
+existing_num_cols = [col for col in numeric_aggregates if col in master_df.columns]
 
-# 6. Safe, minimal categorical encoding (Only encode columns with <= 10 unique values)
+for col in existing_num_cols:
+    # Create binary indicator for whether data was missing before imputation
+    master_df[f"{col}_was_missing"] = master_df[col].isna().astype(int)
+    master_df[col] = master_df[col].fillna(0)
+
+# 6. Safe Categorical Encoding (<= 10 Unique Values)
 print("Encoding low-cardinality categoricals...")
 categorical_cols = master_df.select_dtypes(include=["object", "category"]).columns.tolist()
 
@@ -79,7 +118,6 @@ for col in categorical_cols:
         low_card_cats.append(col)
         master_df[col] = master_df[col].fillna("Missing").astype(str)
     else:
-        # Drop any remaining high-cardinality text columns that slipped through
         master_df = master_df.drop(columns=[col])
 
 if low_card_cats:
