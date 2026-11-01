@@ -44,13 +44,14 @@ skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 # Recommended Model: LightGBM Classifier for high-speed, high-performance tabular learning
 model = LGBMClassifier(
-    n_estimators=300,
-    learning_rate=0.03,
-    max_depth=6,
-    num_leaves=31,
-    scale_pos_weight=9, # Adjusts for the ~10% positive class imbalance
-    random_state=42,
-    n_jobs=-1
+    n_estimators=781,
+    learning_rate=0.011775347352758416,
+    max_depth=9,
+    num_leaves=17,
+    min_child_samples = 71,
+    colsample_bytree = 0.8033653656362315,
+    reg_alpha = 0.0015119140282697282,
+    reg_lambda = 1.0199841615882324
 )
 
 oof_preds = np.zeros(len(X))

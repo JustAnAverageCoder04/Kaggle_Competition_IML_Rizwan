@@ -40,13 +40,14 @@ skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 # XGBoost Classifier setup with histogram-based splitting for speed
 model = XGBClassifier(
-    n_estimators=300,
-    learning_rate=0.03,
-    max_depth=5,
-    scale_pos_weight=9,  # Adjusts for ~10% positive class imbalance
-    tree_method="hist",
-    random_state=42,
-    n_jobs=-1
+    n_estimators=760,
+    learning_rate=0.022276513980312572,
+    max_depth=3,
+    min_child_weight=2,
+    subsample=0.7047713624507725,
+    colsample_bytree=0.7601885160220512,
+    reg_alpha=0.017992090603478016,
+    reg_lambda=0.08346529863609961
 )
 
 oof_preds = np.zeros(len(X))
