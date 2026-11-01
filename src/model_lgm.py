@@ -1,14 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedGroupKFold
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score
 
-# Dynamic path resolution: goes up one level from src/ to project root
+# Path resolution
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 os.makedirs(MODELS_DIR, exist_ok=True)
@@ -17,32 +15,29 @@ print("Loading processed datasets...")
 train_df = pd.read_csv(os.path.join(CLEANED_DIR, "train_processed.csv"))
 test_df = pd.read_csv(os.path.join(CLEANED_DIR, "test_processed.csv"))
 
-# Separate features (X), target (y), and encounter IDs
 target_col = "readmit_30d"
 id_col = "encounter_id"
 
-X = train_df.drop(columns=[id_col, target_col], errors="ignore")
-y = train_df[target_col]
-X_test = test_df.drop(columns=[id_col], errors="ignore")
+# 1. Extract groups (hospital_id) before dropping ID/target columns
+groups = train_df["hospital_id"] if "hospital_id" in train_df.columns else None
 
-# Ensure test columns match train columns exactly
+# 2. Drop non-feature columns from training data
+X = train_df.drop(columns=[id_col, target_col, "hospital_id"], errors="ignore")
+y = train_df[target_col]
+
+X_test = test_df.drop(columns=[id_col, "hospital_id"], errors="ignore")
 X_test = X_test.reindex(columns=X.columns, fill_value=0)
 
-# CRITICAL FIX: Keep only numeric and boolean columns to prevent string/ID dtype errors in LightGBM
-X = X.select_dtypes(include=[np.number, "bool"])
-X_test = X_test.select_dtypes(include=[np.number, "bool"])
+# Filter to numeric/boolean types and handle NaNs
+X = X.select_dtypes(include=[np.number, "bool"]).fillna(-999)
+X_test = X_test.select_dtypes(include=[np.number, "bool"]).fillna(-999)
 
-# Handle remaining NaNs (Fill numerical NaNs with -999)
-X = X.fillna(-999)
-X_test = X_test.fillna(-999)
+print(f"Training with StratifiedGroupKFold on {X.shape[1]} features.")
 
-print(f"Training on {X.shape[1]} clean numeric features.")
-
-# Setup Stratified K-Fold Cross-Validation (preserves the 10% class ratio per fold)
 n_splits = 5
-skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-# Recommended Model: LightGBM Classifier for high-speed, high-performance tabular learning
+# Use your best tuned parameters from Optuna here
 model = LGBMClassifier(
     n_estimators=781,
     learning_rate=0.011775347352758416,
@@ -57,32 +52,27 @@ model = LGBMClassifier(
 oof_preds = np.zeros(len(X))
 test_preds = np.zeros(len(X_test))
 
-print(f"Starting {n_splits}-Fold Stratified Cross-Validation...")
-for fold, (train_idx, val_idx) in enumerate(skf.split(X, y)):
+print(f"Starting {n_splits}-Fold Stratified Group Cross-Validation...")
+for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups=groups)):
     X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
     X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
     
-    # Train model
     model.fit(X_train, y_train)
     
-    # Predict out-of-fold validation probabilities
     oof_preds[val_idx] = model.predict_proba(X_val)[:, 1]
-    
-    # Accumulate test predictions across folds
     test_preds += model.predict_proba(X_test)[:, 1] / n_splits
     
     fold_auc = roc_auc_score(y_val, oof_preds[val_idx])
-    print(f"Fold {fold + 1} ROC-AUC: {fold_auc:.4f}")
+    print(f"Fold {fold + 1} Grouped ROC-AUC: {fold_auc:.4f}")
 
 overall_auc = roc_auc_score(y, oof_preds)
-print(f"\nOverall Out-of-Fold ROC-AUC: {overall_auc:.4f}")
+print(f"\nOverall Grouped Out-of-Fold ROC-AUC: {overall_auc:.4f}")
 
-# Generate Submission File in the root models directory
+# Save OOF predictions and submission file
+np.save(os.path.join(MODELS_DIR, "oof_preds_lgb.npy"), oof_preds)
 submission = pd.DataFrame({
-    "encounter_id": test_df["encounter_id"],
-    "readmit_30d": test_preds
+    id_col: test_df[id_col],
+    target_col: test_preds
 })
-
-sub_path = os.path.join(MODELS_DIR, "submission_lgb.csv")
-submission.to_csv(sub_path, index=False)
-print(f"Submission file successfully saved to root folder: models/submission_lgb.csv")
+submission.to_csv(os.path.join(MODELS_DIR, "submission_lgb.csv"), index=False)
+print("Saved updated grouped LightGBM submission.")
