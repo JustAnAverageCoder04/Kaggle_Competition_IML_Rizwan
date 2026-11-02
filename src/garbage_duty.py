@@ -18,9 +18,9 @@ hospitals_df = pd.read_csv(os.path.join(RAW_DIR, "hospitals.csv"))
 
 # 1. Extract Length of Stay (LOS) BEFORE dropping timestamps
 print("Calculating Length of Stay...")
-if "admission_date" in encounters_df.columns and "discharge_date" in encounters_df.columns:
-    encounters_df["admission_date"] = pd.to_datetime(encounters_df["admission_date"], errors="coerce")
-    encounters_df["discharge_date"] = pd.to_datetime(encounters_df["discharge_date"], errors="coerce")
+if "admit_dt" in encounters_df.columns and "discharge_dt" in encounters_df.columns:
+    encounters_df["admission_date"] = pd.to_datetime(encounters_df["admit_dt"], errors="coerce")
+    encounters_df["discharge_date"] = pd.to_datetime(encounters_df["discharge_dt"], errors="coerce")
     encounters_df["length_of_stay_days"] = (encounters_df["discharge_date"] - encounters_df["admission_date"]).dt.total_seconds() / 86400.0
 else:
     encounters_df["length_of_stay_days"] = 0.0
