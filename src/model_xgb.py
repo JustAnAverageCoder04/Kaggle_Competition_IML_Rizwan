@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedGroupKFold
 from xgboost import XGBClassifier
 from sklearn.metrics import roc_auc_score
 
@@ -18,9 +18,11 @@ test_df = pd.read_csv(os.path.join(CLEANED_DIR, "test_processed.csv"))
 target_col = "readmit_30d"
 id_col = "encounter_id"
 
-X = train_df.drop(columns=[id_col, target_col], errors="ignore")
+groups = train_df["hospital_id"]
+
+X = train_df.drop(columns=[id_col, target_col, "hospital_id"], errors="ignore")
 y = train_df[target_col]
-X_test = test_df.drop(columns=[id_col], errors="ignore")
+X_test = test_df.drop(columns=[id_col, "hospital_id"], errors="ignore")
 
 # Align test columns with train columns
 X_test = X_test.reindex(columns=X.columns, fill_value=0)
@@ -36,7 +38,7 @@ X_test = X_test.fillna(-999)
 print(f"Training XGBoost on {X.shape[1]} clean numeric features.")
 
 n_splits = 5
-skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 # XGBoost Classifier setup with histogram-based splitting for speed
 model = XGBClassifier(
@@ -53,8 +55,8 @@ model = XGBClassifier(
 oof_preds = np.zeros(len(X))
 test_preds = np.zeros(len(X_test))
 
-print(f"Starting {n_splits}-Fold Stratified Cross-Validation with XGBoost...")
-for fold, (train_idx, val_idx) in enumerate(skf.split(X, y)):
+print(f"Starting {n_splits}-Fold Stratified Group Cross-Validation with XGBoost...")
+for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups=groups)):
     X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
     X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
     
@@ -64,10 +66,10 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(X, y)):
     test_preds += model.predict_proba(X_test)[:, 1] / n_splits
     
     fold_auc = roc_auc_score(y_val, oof_preds[val_idx])
-    print(f"Fold {fold + 1} XGBoost ROC-AUC: {fold_auc:.4f}")
+    print(f"Fold {fold + 1} Grouped XGBoost ROC-AUC: {fold_auc:.4f}")
 
 overall_auc = roc_auc_score(y, oof_preds)
-print(f"\nOverall Out-of-Fold XGBoost ROC-AUC: {overall_auc:.4f}")
+print(f"\nOverall Grouped Out-of-Fold XGBoost ROC-AUC: {overall_auc:.4f}")
 
 # Save Submission
 submission = pd.DataFrame({
