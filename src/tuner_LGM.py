@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import optuna
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedGroupKFold
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score
 
@@ -36,6 +36,7 @@ def objective(trial):
         "num_leaves": trial.suggest_int("num_leaves", 15, 63),
         "min_child_samples": trial.suggest_int("min_child_samples", 20, 100),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+        "subsample_freq": 1,
         "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
         "reg_alpha": trial.suggest_float("reg_alpha", 1e-3, 10.0, log=True),
         "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
@@ -45,10 +46,10 @@ def objective(trial):
         "verbose": -1
     }
 
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(X))
 
-    for train_idx, val_idx in skf.split(X, y):
+    for train_idx, val_idx in skf.split(X, y, groups=train_df[id_col]):
         X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
         X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 

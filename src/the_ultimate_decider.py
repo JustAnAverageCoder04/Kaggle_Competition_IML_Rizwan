@@ -14,7 +14,7 @@ lgb_ranks = rankdata(lgb_sub["readmit_30d"]) / len(lgb_sub)
 xgb_ranks = rankdata(xgb_sub["readmit_30d"]) / len(xgb_sub)
 
 # Blend the ranks instead of raw probabilities (50% LightGBM + 50% XGBoost)
-ensemble_ranks = 0.5 * lgb_ranks + 0.5 * xgb_ranks
+ensemble_ranks = 0.4 * lgb_ranks + 0.6 * xgb_ranks
 
 # Build the final ensemble submission dataframe
 ensemble_sub = lgb_sub.copy()
