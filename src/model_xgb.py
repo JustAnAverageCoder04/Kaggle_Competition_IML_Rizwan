@@ -34,14 +34,14 @@ from modeling_utils import (  # noqa: E402
 TAG = "xgb"
 
 PARAMS = {
-    "n_estimators": 742,
-    "learning_rate": 0.021741650139434836,
+    "n_estimators": 502,
+    "learning_rate": 0.039685922357215006,
     "max_depth": 3,
-    "min_child_weight": 8,
-    "subsample": 0.8501817598839572,
-    "colsample_bytree": 0.6752675542666599,
-    "reg_alpha": 0.01686207755998821,
-    "reg_lambda": 0.4054985340213573,
+    "min_child_weight": 2,
+    "subsample": 0.6299899700841038,
+    "colsample_bytree": 0.8418153389411714,
+    "reg_alpha": 4.949713849530675,
+    "reg_lambda": 0.0024758797143213554,
     "scale_pos_weight": POS_WEIGHT,
     "tree_method": "hist",
     "eval_metric": "logloss",

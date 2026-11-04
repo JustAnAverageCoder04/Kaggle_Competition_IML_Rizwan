@@ -37,17 +37,17 @@ from modeling_utils import (  # noqa: E402
 TAG = "lgb"
 
 PARAMS = {
-    "n_estimators": 630,
-    "learning_rate": 0.026988246341727494,
+    "n_estimators": 782,
+    "learning_rate": 0.01698923124150896,
     "max_depth": 3,
-    "num_leaves": 55,
-    "min_child_samples": 33,
-    "subsample": 0.7045606702099793,
+    "num_leaves": 51,
+    "min_child_samples": 42,
+    "subsample": 0.7586645035200215,
     # Without this LightGBM ignores `subsample` entirely; the tuner set it to 1.
     "subsample_freq": 1,
-    "colsample_bytree": 0.6580464996795262,
-    "reg_alpha": 2.237594823375911,
-    "reg_lambda": 0.29046995542878784,
+    "colsample_bytree": 0.943889730654808,
+    "reg_alpha": 0.008228516019554934,
+    "reg_lambda": 0.7829702169807307,
     "scale_pos_weight": POS_WEIGHT,
     "random_state": SEED,
     "n_jobs": -1,
