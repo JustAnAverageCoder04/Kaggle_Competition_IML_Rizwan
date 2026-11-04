@@ -1,0 +1,35 @@
+{
+  "model": "lgb",
+  "n_features": 292,
+  "n_train": 76975,
+  "n_test": 32812,
+  "group_column": "patient_id",
+  "n_splits": 5,
+  "seed": 42,
+  "fold_roc_auc": [
+    0.7520220245450318,
+    0.7312340175905004,
+    0.7321883748002752,
+    0.7479276774954448,
+    0.7537661994358804
+  ],
+  "mean_fold_roc_auc": 0.7434276587734265,
+  "std_fold_roc_auc": 0.009757101045607283,
+  "overall_oof_roc_auc": 0.7433482979077353,
+  "params": {
+    "n_estimators": 630,
+    "learning_rate": 0.026988246341727494,
+    "max_depth": 3,
+    "num_leaves": 55,
+    "min_child_samples": 33,
+    "subsample": 0.7045606702099793,
+    "subsample_freq": 1,
+    "colsample_bytree": 0.6580464996795262,
+    "reg_alpha": 2.237594823375911,
+    "reg_lambda": 0.29046995542878784,
+    "scale_pos_weight": 9.0,
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbose": -1
+  }
+}

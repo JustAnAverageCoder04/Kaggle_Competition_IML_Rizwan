@@ -1,79 +1,76 @@
+"""LightGBM model for 30-day readmission.
+
+The pipeline is deliberately thin: all shared behaviour (matrix construction,
+grouped CV, validation, artifacts) lives in ``modeling_utils`` so this script
+and ``model_xgb.py`` cannot drift apart.
+
+Run::
+
+    python src/model_lgm.py
+
+Hyper-parameters below are the Optuna results produced by ``tuner_LGM.py``.
+They were searched *with* ``subsample_freq=1`` and ``scale_pos_weight=9``, so
+both are set here too - otherwise the searched configuration would not be the
+configuration being fitted.
+"""
+
+from __future__ import annotations
+
 import os
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import StratifiedGroupKFold
-from lightgbm import LGBMClassifier
-from sklearn.metrics import roc_auc_score
+import sys
 
-# Path resolution
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned")
-MODELS_DIR = os.path.join(BASE_DIR, "models")
-os.makedirs(MODELS_DIR, exist_ok=True)
+_HERE = os.path.dirname(os.path.abspath(__file__))
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
 
-print("Loading processed datasets...")
-train_df = pd.read_csv(os.path.join(CLEANED_DIR, "train_processed.csv"))
-test_df = pd.read_csv(os.path.join(CLEANED_DIR, "test_processed.csv"))
+from lightgbm import LGBMClassifier  # noqa: E402
 
-target_col = "readmit_30d"
-id_col = "encounter_id"
-
-# 1. Extract groups (hospital_id) before dropping ID/target columns
-groups = train_df["hospital_id"] if "hospital_id" in train_df.columns else None
-
-# 2. Drop non-feature columns from training data
-X = train_df.drop(columns=[id_col, target_col, "hospital_id"], errors="ignore")
-y = train_df[target_col]
-
-X_test = test_df.drop(columns=[id_col, "hospital_id"], errors="ignore")
-X_test = X_test.reindex(columns=X.columns, fill_value=0)
-
-# Filter to numeric/boolean types and handle NaNs
-X = X.select_dtypes(include=[np.number, "bool"]).fillna(-999)
-X_test = X_test.select_dtypes(include=[np.number, "bool"]).fillna(-999)
-
-print(f"Training with StratifiedGroupKFold on {X.shape[1]} features.")
-
-n_splits = 5
-sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
-
-# Use your best tuned parameters from Optuna here
-model = LGBMClassifier(
-  n_estimators = 630,
-  learning_rate = 0.026988246341727494,
-  max_depth = 3,
-  num_leaves = 55,
-  min_child_samples = 33,
-  subsample = 0.7045606702099793,
-  colsample_bytree = 0.6580464996795262,
-  reg_alpha = 2.237594823375911,
-  reg_lambda = 0.29046995542878784
+from modeling_utils import (  # noqa: E402
+    POS_WEIGHT,
+    SEED,
+    build_matrices,
+    load_datasets,
+    run_cv,
+    save_artifacts,
 )
 
-oof_preds = np.zeros(len(X))
-test_preds = np.zeros(len(X_test))
+TAG = "lgb"
 
-print(f"Starting {n_splits}-Fold Stratified Group Cross-Validation...")
-for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups=groups)):
-    X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
-    X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
-    
-    model.fit(X_train, y_train)
-    
-    oof_preds[val_idx] = model.predict_proba(X_val)[:, 1]
-    test_preds += model.predict_proba(X_test)[:, 1] / n_splits
-    
-    fold_auc = roc_auc_score(y_val, oof_preds[val_idx])
-    print(f"Fold {fold + 1} Grouped ROC-AUC: {fold_auc:.4f}")
+PARAMS = {
+    "n_estimators": 630,
+    "learning_rate": 0.026988246341727494,
+    "max_depth": 3,
+    "num_leaves": 55,
+    "min_child_samples": 33,
+    "subsample": 0.7045606702099793,
+    # Without this LightGBM ignores `subsample` entirely; the tuner set it to 1.
+    "subsample_freq": 1,
+    "colsample_bytree": 0.6580464996795262,
+    "reg_alpha": 2.237594823375911,
+    "reg_lambda": 0.29046995542878784,
+    "scale_pos_weight": POS_WEIGHT,
+    "random_state": SEED,
+    "n_jobs": -1,
+    "verbose": -1,
+}
 
-overall_auc = roc_auc_score(y, oof_preds)
-print(f"\nOverall Grouped Out-of-Fold ROC-AUC: {overall_auc:.4f}")
 
-# Save OOF predictions and submission file
-np.save(os.path.join(MODELS_DIR, "oof_preds_lgb.npy"), oof_preds)
-submission = pd.DataFrame({
-    id_col: test_df[id_col],
-    target_col: test_preds
-})
-submission.to_csv(os.path.join(MODELS_DIR, "submission_lgb.csv"), index=False)
-print("Saved updated grouped LightGBM submission.")
+def make_model() -> LGBMClassifier:
+    """A fresh, unfitted estimator (one per fold)."""
+    return LGBMClassifier(**PARAMS)
+
+
+def main() -> None:
+    train_df, test_df = load_datasets()
+    matrices = build_matrices(train_df, test_df)
+
+    oof, test_preds, fold_scores, overall_auc = run_cv(
+        make_model, matrices, tag=TAG
+    )
+    save_artifacts(
+        TAG, matrices, oof, test_preds, fold_scores, overall_auc, params=PARAMS
+    )
+
+
+if __name__ == "__main__":
+    main()
