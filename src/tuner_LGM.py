@@ -49,7 +49,7 @@ def objective(trial):
     skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(X))
 
-    for train_idx, val_idx in skf.split(X, y, groups=train_df[id_col]):
+    for train_idx, val_idx in skf.split(X, y, groups=train_df["hospital_id"]):
         X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
         X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 

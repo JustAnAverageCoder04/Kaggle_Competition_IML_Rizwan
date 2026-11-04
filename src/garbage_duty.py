@@ -106,6 +106,38 @@ for category, prefix in [("drug_class", "medication_class_count"), ("route", "me
 print("Aggregating labs and vitals by measurement type...")
 labs_df = pd.read_csv(os.path.join(RAW_DIR, "lab_results.csv"))
 labs_df["value"] = pd.to_numeric(labs_df["value"], errors="coerce")
+
+# Convert mixed-unit lab results to a consistent unit per analyte.
+lab_unit_factors = pd.Series(1.0, index=labs_df.index)
+lab_unit_factors.loc[
+    labs_df["lab_name"].eq("Albumin") & labs_df["unit"].eq("g/L")
+] = 0.1
+lab_unit_factors.loc[
+    labs_df["lab_name"].eq("Creatinine") & labs_df["unit"].eq("umol/L")
+] = 1 / 88.4
+lab_unit_factors.loc[
+    labs_df["lab_name"].eq("Glucose") & labs_df["unit"].eq("mmol/L")
+] = 18.0182
+lab_unit_factors.loc[
+    labs_df["lab_name"].eq("Hemoglobin") & labs_df["unit"].eq("g/L")
+] = 0.1
+
+# Infer the common alternate unit only when the source unit is missing.
+missing_unit = labs_df["unit"].isna()
+lab_unit_factors.loc[
+    missing_unit & labs_df["lab_name"].eq("Albumin") & labs_df["value"].gt(10)
+] = 0.1
+lab_unit_factors.loc[
+    missing_unit & labs_df["lab_name"].eq("Creatinine") & labs_df["value"].gt(20)
+] = 1 / 88.4
+lab_unit_factors.loc[
+    missing_unit & labs_df["lab_name"].eq("Glucose") & labs_df["value"].le(30)
+] = 18.0182
+lab_unit_factors.loc[
+    missing_unit & labs_df["lab_name"].eq("Hemoglobin") & labs_df["value"].gt(30)
+] = 0.1
+labs_df["value"] *= lab_unit_factors
+
 lab_values = labs_df.groupby(["encounter_id", "lab_name"]).agg(
     count=("value", "count"),
     mean=("value", "mean"),
@@ -130,6 +162,15 @@ labs_agg = lab_counts.merge(lab_values, on="encounter_id", how="left").merge(
 
 vitals_df = pd.read_csv(os.path.join(RAW_DIR, "vitals.csv"))
 vitals_df["value"] = pd.to_numeric(vitals_df["value"], errors="coerce")
+temperature_fahrenheit = (
+    vitals_df["vital_type"].eq("TEMP")
+    & vitals_df["value"].gt(50)
+    & vitals_df["value"].le(120)
+)
+vitals_df.loc[temperature_fahrenheit, "value"] = (
+    vitals_df.loc[temperature_fahrenheit, "value"] - 32
+) * (5 / 9)
+
 vitals_agg = vitals_df.groupby(["encounter_id", "vital_type"]).agg(
     count=("value", "count"),
     mean=("value", "mean"),
