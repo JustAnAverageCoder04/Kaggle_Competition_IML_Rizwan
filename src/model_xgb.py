@@ -37,19 +37,19 @@ X_test = X_test.select_dtypes(include=[np.number, "bool"])
 
 print(f"Training XGBoost on {X.shape[1]} clean numeric features.")
 
-n_splits = 5
+n_splits = 10
 sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 # XGBoost Classifier setup with histogram-based splitting for speed
 model = XGBClassifier(
-  n_estimators=742,
-  learning_rate=0.021741650139434836,
-  max_depth=3,
-  min_child_weight=8,
-  subsample=0.8501817598839572,
-  colsample_bytree=0.6752675542666599,
-  reg_alpha=0.01686207755998821,
-  reg_lambda=0.4054985340213573
+  n_estimators= 678,
+  learning_rate= 0.020063012526361647,
+  max_depth= 3,
+  min_child_weight= 7,
+  subsample= 0.840519386969552,
+  colsample_bytree= 0.6035689739053297,
+  reg_alpha= 0.16227203916698177,
+  reg_lambda= 0.19243622406543415
 )
 
 oof_preds = np.zeros(len(X))

@@ -25,14 +25,14 @@ X = train_df.drop(columns=[id_col, target_col], errors="ignore")
 y = train_df[target_col]
 
 # Ensure clean numeric/boolean types and handle NaNs
-X = X.select_dtypes(include=[np.number, "bool"]).fillna(-999)
+X = X.select_dtypes(include=[np.number, "bool"])
 
 def objective(trial):
     # Define hyperparameter search space
     params = {
         "n_estimators": trial.suggest_int("n_estimators", 200, 800),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.1, log=True),
-        "max_depth": trial.suggest_int("max_depth", 3, 9),
+        "max_depth": trial.suggest_int("max_depth", -1, 9),
         "num_leaves": trial.suggest_int("num_leaves", 15, 63),
         "min_child_samples": trial.suggest_int("min_child_samples", 20, 100),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
@@ -40,7 +40,7 @@ def objective(trial):
         "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
         "reg_alpha": trial.suggest_float("reg_alpha", 1e-3, 10.0, log=True),
         "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
-        "scale_pos_weight": 9,  # Fix for ~10% positive class imbalance
+        "scale_pos_weight": 9, 
         "random_state": 42,
         "n_jobs": -1,
         "verbose": -1
@@ -72,4 +72,3 @@ for key, value in study.best_params.items():
     print(f"  {key}: {value}")
 
 # Save best parameters to a dictionary or directly use them in your training script
-best_params = study.best_params
