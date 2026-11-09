@@ -1,0 +1,297 @@
+﻿column,source_table(s),creation / definition,train_processed.csv,test_processed.csv
+encounter_id,train.csv; test.csv,Encounter join key retained as identifier.,yes,yes
+patient_id,index_encounters.csv,"Patient identifier carried from index_encounters; retained as an identifier, not one-hot encoded.",yes,yes
+hospital_id,index_encounters.csv,"Hospital identifier carried from index_encounters; retained for grouped validation, not one-hot encoded.",yes,yes
+admit_weight_kg,index_encounters.csv,Numeric admission weight copied from the index encounter.,yes,yes
+length_of_stay_days,index_encounters.csv,Discharge minus admission timestamp in fractional days.,yes,yes
+admission_month,index_encounters.csv,Month extracted from admission timestamp.,yes,yes
+admission_dayofweek,index_encounters.csv,Weekday extracted from admission timestamp (Monday=0).,yes,yes
+admission_hour,index_encounters.csv,Hour extracted from admission timestamp.,yes,yes
+age_at_admission,index_encounters.csv; patients.csv,Admission year minus patient birth year; no birthday adjustment.,yes,yes
+birth_year,patients.csv,Numeric birth year copied from the patient record.,yes,yes
+zip3,patients.csv,ZIP3 field copied from the patient record; treated as numeric by pandas CSV inference.,yes,yes
+deprivation_index,patients.csv,Numeric deprivation score copied from the patient record.,yes,yes
+bed_size,hospitals.csv,Numeric licensed bed count copied from hospital record.,yes,yes
+teaching_flag,hospitals.csv,Numeric teaching-hospital flag copied from hospital record.,yes,yes
+hospital_encounter_volume,index_encounters.csv,Count of encounters by hospital_id.,yes,yes
+total_diagnoses,diagnoses.csv,Number of diagnosis codes per encounter.,yes,yes
+unique_diagnoses,diagnoses.csv,Distinct ICD-10 codes per encounter.,yes,yes
+primary_diagnoses,diagnoses.csv,Sum of is_primary per encounter.,yes,yes
+chronic_diagnoses,diagnoses.csv; icd10_lookup.csv,Sum of chronic_flag after normalized ICD code lookup.,yes,yes
+poa_yes,diagnoses.csv,Count of present_on_admission == Y.,yes,yes
+poa_no,diagnoses.csv,Count of present_on_admission == N.,yes,yes
+diagnosis_chapter_count_Blood/Neoplasms,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Circulatory,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Digestive,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Endocrine/metabolic,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_External causes,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Genitourinary,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Health status/services,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Infectious diseases,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Injury,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Mental/behavioral,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Musculoskeletal,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Neoplasms,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Nervous system,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Respiratory,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Skin,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+diagnosis_chapter_count_Symptoms/signs,diagnoses.csv; icd10_lookup.csv,Count diagnoses by lookup chapter; ICD codes uppercased and periods removed for matching.,yes,yes
+total_procedures,procedures.csv,Number of procedure rows per encounter.,yes,yes
+unique_procedure_codes,procedures.csv,Distinct procedure codes per encounter.,yes,yes
+procedure_code_count_19303,procedures.csv,Count procedure rows for code '19303'.,yes,yes
+procedure_code_count_27130,procedures.csv,Count procedure rows for code '27130'.,yes,yes
+procedure_code_count_27236,procedures.csv,Count procedure rows for code '27236'.,yes,yes
+procedure_code_count_27447,procedures.csv,Count procedure rows for code '27447'.,yes,yes
+procedure_code_count_32480,procedures.csv,Count procedure rows for code '32480'.,yes,yes
+procedure_code_count_36556,procedures.csv,Count procedure rows for code '36556'.,yes,yes
+procedure_code_count_43239,procedures.csv,Count procedure rows for code '43239'.,yes,yes
+procedure_code_count_44120,procedures.csv,Count procedure rows for code '44120'.,yes,yes
+procedure_code_count_44140,procedures.csv,Count procedure rows for code '44140'.,yes,yes
+procedure_code_count_44970,procedures.csv,Count procedure rows for code '44970'.,yes,yes
+procedure_code_count_45378,procedures.csv,Count procedure rows for code '45378'.,yes,yes
+procedure_code_count_47562,procedures.csv,Count procedure rows for code '47562'.,yes,yes
+procedure_code_count_92928,procedures.csv,Count procedure rows for code '92928'.,yes,yes
+procedure_code_count_92960,procedures.csv,Count procedure rows for code '92960'.,yes,yes
+procedure_code_count_93458,procedures.csv,Count procedure rows for code '93458'.,yes,yes
+procedure_type_count_CPT,procedures.csv,Count procedure rows for code_type 'CPT'.,yes,yes
+procedure_type_count_CPT-4,procedures.csv,Count procedure rows for code_type 'CPT-4'.,yes,yes
+total_medications,medications.csv,Number of medication rows per encounter.,yes,yes
+unique_drug_classes,medications.csv,Distinct drug classes per encounter.,yes,yes
+medications_continued_at_discharge,medications.csv,Sum of continued_at_discharge per encounter.,yes,yes
+medication_class_count_ACE_ARB,medications.csv,Count medication rows for drug_class 'ACE_ARB'.,yes,yes
+medication_class_count_ANALGESIC,medications.csv,Count medication rows for drug_class 'ANALGESIC'.,yes,yes
+medication_class_count_ANTIBIOTIC,medications.csv,Count medication rows for drug_class 'ANTIBIOTIC'.,yes,yes
+medication_class_count_ANTICOAGULANT,medications.csv,Count medication rows for drug_class 'ANTICOAGULANT'.,yes,yes
+medication_class_count_ANTIDIABETIC_ORAL,medications.csv,Count medication rows for drug_class 'ANTIDIABETIC_ORAL'.,yes,yes
+medication_class_count_ANTIEMETIC,medications.csv,Count medication rows for drug_class 'ANTIEMETIC'.,yes,yes
+medication_class_count_ANTIPLATELET,medications.csv,Count medication rows for drug_class 'ANTIPLATELET'.,yes,yes
+medication_class_count_ANTIPSYCHOTIC,medications.csv,Count medication rows for drug_class 'ANTIPSYCHOTIC'.,yes,yes
+medication_class_count_BENZODIAZEPINE,medications.csv,Count medication rows for drug_class 'BENZODIAZEPINE'.,yes,yes
+medication_class_count_BETA_BLOCKER,medications.csv,Count medication rows for drug_class 'BETA_BLOCKER'.,yes,yes
+medication_class_count_BRONCHODILATOR,medications.csv,Count medication rows for drug_class 'BRONCHODILATOR'.,yes,yes
+medication_class_count_CCB,medications.csv,Count medication rows for drug_class 'CCB'.,yes,yes
+medication_class_count_CORTICOSTEROID,medications.csv,Count medication rows for drug_class 'CORTICOSTEROID'.,yes,yes
+medication_class_count_ELECTROLYTE,medications.csv,Count medication rows for drug_class 'ELECTROLYTE'.,yes,yes
+medication_class_count_INSULIN,medications.csv,Count medication rows for drug_class 'INSULIN'.,yes,yes
+medication_class_count_LOOP_DIURETIC,medications.csv,Count medication rows for drug_class 'LOOP_DIURETIC'.,yes,yes
+medication_class_count_OPIOID,medications.csv,Count medication rows for drug_class 'OPIOID'.,yes,yes
+medication_class_count_PPI,medications.csv,Count medication rows for drug_class 'PPI'.,yes,yes
+medication_class_count_SSRI,medications.csv,Count medication rows for drug_class 'SSRI'.,yes,yes
+medication_class_count_STATIN,medications.csv,Count medication rows for drug_class 'STATIN'.,yes,yes
+medication_class_count_SUPPLEMENT,medications.csv,Count medication rows for drug_class 'SUPPLEMENT'.,yes,yes
+medication_class_count_THYROID,medications.csv,Count medication rows for drug_class 'THYROID'.,yes,yes
+medication_route_count_INH,medications.csv,Count medication rows for route 'INH'.,yes,yes
+medication_route_count_IV,medications.csv,Count medication rows for route 'IV'.,yes,yes
+medication_route_count_PO,medications.csv,Count medication rows for route 'PO'.,yes,yes
+medication_route_count_SC,medications.csv,Count medication rows for route 'SC'.,yes,yes
+total_labs,lab_results.csv,Number of lab rows per encounter.,yes,yes
+lab_count_Albumin,lab_results.csv,"count of numeric values for lab 'Albumin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Bnp,lab_results.csv,"count of numeric values for lab 'Bnp' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Bun,lab_results.csv,"count of numeric values for lab 'Bun' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Creatinine,lab_results.csv,"count of numeric values for lab 'Creatinine' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Glucose,lab_results.csv,"count of numeric values for lab 'Glucose' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Hba1C,lab_results.csv,"count of numeric values for lab 'Hba1C' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Hemoglobin,lab_results.csv,"count of numeric values for lab 'Hemoglobin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Inr,lab_results.csv,"count of numeric values for lab 'Inr' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Lactate,lab_results.csv,"count of numeric values for lab 'Lactate' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Potassium,lab_results.csv,"count of numeric values for lab 'Potassium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Sodium,lab_results.csv,"count of numeric values for lab 'Sodium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Troponin_I,lab_results.csv,"count of numeric values for lab 'Troponin_I' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_count_Wbc,lab_results.csv,"count of numeric values for lab 'Wbc' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Albumin,lab_results.csv,"mean of numeric values for lab 'Albumin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Bnp,lab_results.csv,"mean of numeric values for lab 'Bnp' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Bun,lab_results.csv,"mean of numeric values for lab 'Bun' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Creatinine,lab_results.csv,"mean of numeric values for lab 'Creatinine' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Glucose,lab_results.csv,"mean of numeric values for lab 'Glucose' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Hba1C,lab_results.csv,"mean of numeric values for lab 'Hba1C' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Hemoglobin,lab_results.csv,"mean of numeric values for lab 'Hemoglobin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Inr,lab_results.csv,"mean of numeric values for lab 'Inr' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Lactate,lab_results.csv,"mean of numeric values for lab 'Lactate' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Potassium,lab_results.csv,"mean of numeric values for lab 'Potassium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Sodium,lab_results.csv,"mean of numeric values for lab 'Sodium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Troponin_I,lab_results.csv,"mean of numeric values for lab 'Troponin_I' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_mean_Wbc,lab_results.csv,"mean of numeric values for lab 'Wbc' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Albumin,lab_results.csv,"min of numeric values for lab 'Albumin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Bnp,lab_results.csv,"min of numeric values for lab 'Bnp' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Bun,lab_results.csv,"min of numeric values for lab 'Bun' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Creatinine,lab_results.csv,"min of numeric values for lab 'Creatinine' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Glucose,lab_results.csv,"min of numeric values for lab 'Glucose' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Hba1C,lab_results.csv,"min of numeric values for lab 'Hba1C' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Hemoglobin,lab_results.csv,"min of numeric values for lab 'Hemoglobin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Inr,lab_results.csv,"min of numeric values for lab 'Inr' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Lactate,lab_results.csv,"min of numeric values for lab 'Lactate' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Potassium,lab_results.csv,"min of numeric values for lab 'Potassium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Sodium,lab_results.csv,"min of numeric values for lab 'Sodium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Troponin_I,lab_results.csv,"min of numeric values for lab 'Troponin_I' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_min_Wbc,lab_results.csv,"min of numeric values for lab 'Wbc' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Albumin,lab_results.csv,"max of numeric values for lab 'Albumin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Bnp,lab_results.csv,"max of numeric values for lab 'Bnp' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Bun,lab_results.csv,"max of numeric values for lab 'Bun' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Creatinine,lab_results.csv,"max of numeric values for lab 'Creatinine' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Glucose,lab_results.csv,"max of numeric values for lab 'Glucose' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Hba1C,lab_results.csv,"max of numeric values for lab 'Hba1C' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Hemoglobin,lab_results.csv,"max of numeric values for lab 'Hemoglobin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Inr,lab_results.csv,"max of numeric values for lab 'Inr' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Lactate,lab_results.csv,"max of numeric values for lab 'Lactate' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Potassium,lab_results.csv,"max of numeric values for lab 'Potassium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Sodium,lab_results.csv,"max of numeric values for lab 'Sodium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Troponin_I,lab_results.csv,"max of numeric values for lab 'Troponin_I' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_max_Wbc,lab_results.csv,"max of numeric values for lab 'Wbc' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Albumin,lab_results.csv,"std of numeric values for lab 'Albumin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Bnp,lab_results.csv,"std of numeric values for lab 'Bnp' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Bun,lab_results.csv,"std of numeric values for lab 'Bun' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Creatinine,lab_results.csv,"std of numeric values for lab 'Creatinine' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Glucose,lab_results.csv,"std of numeric values for lab 'Glucose' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Hba1C,lab_results.csv,"std of numeric values for lab 'Hba1C' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Hemoglobin,lab_results.csv,"std of numeric values for lab 'Hemoglobin' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Inr,lab_results.csv,"std of numeric values for lab 'Inr' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Lactate,lab_results.csv,"std of numeric values for lab 'Lactate' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Potassium,lab_results.csv,"std of numeric values for lab 'Potassium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Sodium,lab_results.csv,"std of numeric values for lab 'Sodium' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Troponin_I,lab_results.csv,"std of numeric values for lab 'Troponin_I' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_std_Wbc,lab_results.csv,"std of numeric values for lab 'Wbc' per encounter; known alternate units normalized for Albumin, Creatinine, Glucose and Hemoglobin.",yes,yes
+lab_abnormal_count_Albumin,lab_results.csv,Count of high or low abnormal flags for lab 'Albumin'.,yes,yes
+lab_abnormal_count_Bnp,lab_results.csv,Count of high or low abnormal flags for lab 'Bnp'.,yes,yes
+lab_abnormal_count_Bun,lab_results.csv,Count of high or low abnormal flags for lab 'Bun'.,yes,yes
+lab_abnormal_count_Creatinine,lab_results.csv,Count of high or low abnormal flags for lab 'Creatinine'.,yes,yes
+lab_abnormal_count_Glucose,lab_results.csv,Count of high or low abnormal flags for lab 'Glucose'.,yes,yes
+lab_abnormal_count_Hba1C,lab_results.csv,Count of high or low abnormal flags for lab 'Hba1C'.,yes,yes
+lab_abnormal_count_Hemoglobin,lab_results.csv,Count of high or low abnormal flags for lab 'Hemoglobin'.,yes,yes
+lab_abnormal_count_Inr,lab_results.csv,Count of high or low abnormal flags for lab 'Inr'.,yes,yes
+lab_abnormal_count_Lactate,lab_results.csv,Count of high or low abnormal flags for lab 'Lactate'.,yes,yes
+lab_abnormal_count_Potassium,lab_results.csv,Count of high or low abnormal flags for lab 'Potassium'.,yes,yes
+lab_abnormal_count_Sodium,lab_results.csv,Count of high or low abnormal flags for lab 'Sodium'.,yes,yes
+lab_abnormal_count_Troponin_I,lab_results.csv,Count of high or low abnormal flags for lab 'Troponin_I'.,yes,yes
+lab_abnormal_count_Wbc,lab_results.csv,Count of high or low abnormal flags for lab 'Wbc'.,yes,yes
+lab_abnormal_rate_Albumin,lab_results.csv,Rate of high or low abnormal flags for lab 'Albumin'.,yes,yes
+lab_abnormal_rate_Bnp,lab_results.csv,Rate of high or low abnormal flags for lab 'Bnp'.,yes,yes
+lab_abnormal_rate_Bun,lab_results.csv,Rate of high or low abnormal flags for lab 'Bun'.,yes,yes
+lab_abnormal_rate_Creatinine,lab_results.csv,Rate of high or low abnormal flags for lab 'Creatinine'.,yes,yes
+lab_abnormal_rate_Glucose,lab_results.csv,Rate of high or low abnormal flags for lab 'Glucose'.,yes,yes
+lab_abnormal_rate_Hba1C,lab_results.csv,Rate of high or low abnormal flags for lab 'Hba1C'.,yes,yes
+lab_abnormal_rate_Hemoglobin,lab_results.csv,Rate of high or low abnormal flags for lab 'Hemoglobin'.,yes,yes
+lab_abnormal_rate_Inr,lab_results.csv,Rate of high or low abnormal flags for lab 'Inr'.,yes,yes
+lab_abnormal_rate_Lactate,lab_results.csv,Rate of high or low abnormal flags for lab 'Lactate'.,yes,yes
+lab_abnormal_rate_Potassium,lab_results.csv,Rate of high or low abnormal flags for lab 'Potassium'.,yes,yes
+lab_abnormal_rate_Sodium,lab_results.csv,Rate of high or low abnormal flags for lab 'Sodium'.,yes,yes
+lab_abnormal_rate_Troponin_I,lab_results.csv,Rate of high or low abnormal flags for lab 'Troponin_I'.,yes,yes
+lab_abnormal_rate_Wbc,lab_results.csv,Rate of high or low abnormal flags for lab 'Wbc'.,yes,yes
+total_vitals,vitals.csv,Number of vital rows per encounter.,yes,yes
+vital_count_DBP,vitals.csv,count of values for vital 'DBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_count_HR,vitals.csv,count of values for vital 'HR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_count_RR,vitals.csv,count of values for vital 'RR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_count_SBP,vitals.csv,count of values for vital 'SBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_count_SPO2,vitals.csv,count of values for vital 'SPO2' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_count_TEMP,vitals.csv,count of values for vital 'TEMP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_DBP,vitals.csv,mean of values for vital 'DBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_HR,vitals.csv,mean of values for vital 'HR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_RR,vitals.csv,mean of values for vital 'RR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_SBP,vitals.csv,mean of values for vital 'SBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_SPO2,vitals.csv,mean of values for vital 'SPO2' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_mean_TEMP,vitals.csv,mean of values for vital 'TEMP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_DBP,vitals.csv,min of values for vital 'DBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_HR,vitals.csv,min of values for vital 'HR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_RR,vitals.csv,min of values for vital 'RR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_SBP,vitals.csv,min of values for vital 'SBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_SPO2,vitals.csv,min of values for vital 'SPO2' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_min_TEMP,vitals.csv,min of values for vital 'TEMP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_DBP,vitals.csv,max of values for vital 'DBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_HR,vitals.csv,max of values for vital 'HR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_RR,vitals.csv,max of values for vital 'RR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_SBP,vitals.csv,max of values for vital 'SBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_SPO2,vitals.csv,max of values for vital 'SPO2' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_max_TEMP,vitals.csv,max of values for vital 'TEMP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_DBP,vitals.csv,std of values for vital 'DBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_HR,vitals.csv,std of values for vital 'HR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_RR,vitals.csv,std of values for vital 'RR' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_SBP,vitals.csv,std of values for vital 'SBP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_SPO2,vitals.csv,std of values for vital 'SPO2' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+vital_std_TEMP,vitals.csv,std of values for vital 'TEMP' per encounter; TEMP values in 50-120 range converted from Fahrenheit to Celsius.,yes,yes
+total_unit_transfers,unit_transfers.csv,Number of transfer rows per encounter.,yes,yes
+total_unit_hours,unit_transfers.csv,Sum of transfer durations in hours; negative durations clipped at zero.,yes,yes
+unit_hours_ED,unit_transfers.csv,Sum clipped unit duration hours for 'ED'.,yes,yes
+unit_hours_ICU,unit_transfers.csv,Sum clipped unit duration hours for 'ICU'.,yes,yes
+unit_hours_STEPDOWN,unit_transfers.csv,Sum clipped unit duration hours for 'STEPDOWN'.,yes,yes
+unit_hours_WARD,unit_transfers.csv,Sum clipped unit duration hours for 'WARD'.,yes,yes
+unit_transfer_count_ED,unit_transfers.csv,Count transfer rows for unit 'ED'.,yes,yes
+unit_transfer_count_ICU,unit_transfers.csv,Count transfer rows for unit 'ICU'.,yes,yes
+unit_transfer_count_STEPDOWN,unit_transfers.csv,Count transfer rows for unit 'STEPDOWN'.,yes,yes
+unit_transfer_count_WARD,unit_transfers.csv,Count transfer rows for unit 'WARD'.,yes,yes
+followup_scheduled_days,discharge_planning.csv,Coerced to numeric from discharge planning; absent value remains missing.,yes,yes
+home_health_referral,discharge_planning.csv,Y/N mapped to 1/0; absent value remains missing.,yes,yes
+med_reconciliation_done,discharge_planning.csv,Original field retained; categorical fields are one-hot encoded with drop_first=True.,yes,yes
+education_done,discharge_planning.csv,Yes/No mapped to 1/0; absent value remains missing.,yes,yes
+total_prior_visits,prior_utilization.csv,Number of prior visit rows per patient.,yes,yes
+prior_visit_type_count_ED,prior_utilization.csv,Count prior rows for visit_type 'ED'.,yes,yes
+prior_visit_type_count_IP,prior_utilization.csv,Count prior rows for visit_type 'IP'.,yes,yes
+prior_visit_type_count_OP,prior_utilization.csv,Count prior rows for visit_type 'OP'.,yes,yes
+prior_visits_90d,prior_utilization.csv; index_encounters.csv,"Prior visit count within 90 days before admission through admission date, inclusive.",yes,yes
+days_since_last_prior_visit,prior_utilization.csv; index_encounters.csv,"Admission timestamp minus patient-level latest prior visit timestamp, in days.",yes,yes
+admission_type_Emergency,index_encounters.csv,One-hot indicator for admission_type='Emergency'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_type_Missing,index_encounters.csv,One-hot indicator for admission_type='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_type_Not Available,index_encounters.csv,One-hot indicator for admission_type='Not Available'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_type_Trauma,index_encounters.csv,One-hot indicator for admission_type='Trauma'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_type_Urgent,index_encounters.csv,One-hot indicator for admission_type='Urgent'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Emergency Room,index_encounters.csv,One-hot indicator for admission_source='Emergency Room'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Missing,index_encounters.csv,One-hot indicator for admission_source='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Not Available,index_encounters.csv,One-hot indicator for admission_source='Not Available'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Physician Referral,index_encounters.csv,One-hot indicator for admission_source='Physician Referral'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Transfer from Hospital,index_encounters.csv,One-hot indicator for admission_source='Transfer from Hospital'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+admission_source_Transfer from SNF,index_encounters.csv,One-hot indicator for admission_source='Transfer from SNF'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Medicine,index_encounters.csv,One-hot indicator for service_line='Medicine'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Neurology,index_encounters.csv,One-hot indicator for service_line='Neurology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Oncology,index_encounters.csv,One-hot indicator for service_line='Oncology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Orthopedics,index_encounters.csv,One-hot indicator for service_line='Orthopedics'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Pulmonology,index_encounters.csv,One-hot indicator for service_line='Pulmonology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+service_line_Surgery,index_encounters.csv,One-hot indicator for service_line='Surgery'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Home with Home Health,index_encounters.csv,One-hot indicator for discharge_disposition='Home with Home Health'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Hospice,index_encounters.csv,One-hot indicator for discharge_disposition='Hospice'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Inpatient Rehab,index_encounters.csv,One-hot indicator for discharge_disposition='Inpatient Rehab'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Left AMA,index_encounters.csv,One-hot indicator for discharge_disposition='Left AMA'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Missing,index_encounters.csv,One-hot indicator for discharge_disposition='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Not Mapped,index_encounters.csv,One-hot indicator for discharge_disposition='Not Mapped'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Other Facility,index_encounters.csv,One-hot indicator for discharge_disposition='Other Facility'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+discharge_disposition_Skilled Nursing Facility,index_encounters.csv,One-hot indicator for discharge_disposition='Skilled Nursing Facility'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Emergency/Trauma,index_encounters.csv,One-hot indicator for attending_specialty='Emergency/Trauma'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Family/GeneralPractice,index_encounters.csv,One-hot indicator for attending_specialty='Family/GeneralPractice'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Hospitalist,index_encounters.csv,One-hot indicator for attending_specialty='Hospitalist'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_InternalMedicine,index_encounters.csv,One-hot indicator for attending_specialty='InternalMedicine'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Missing,index_encounters.csv,One-hot indicator for attending_specialty='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Nephrology,index_encounters.csv,One-hot indicator for attending_specialty='Nephrology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Neurology,index_encounters.csv,One-hot indicator for attending_specialty='Neurology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Oncology,index_encounters.csv,One-hot indicator for attending_specialty='Oncology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Orthopedics,index_encounters.csv,One-hot indicator for attending_specialty='Orthopedics'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Pulmonology,index_encounters.csv,One-hot indicator for attending_specialty='Pulmonology'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Surgery-Colorectal,index_encounters.csv,One-hot indicator for attending_specialty='Surgery-Colorectal'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+attending_specialty_Surgery-General,index_encounters.csv,One-hot indicator for attending_specialty='Surgery-General'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+sex_M,patients.csv,One-hot indicator for sex='M'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+sex_U,patients.csv,One-hot indicator for sex='U'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Asian,patients.csv,One-hot indicator for race_ethnicity='Asian'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Black,patients.csv,One-hot indicator for race_ethnicity='Black'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Hispanic,patients.csv,One-hot indicator for race_ethnicity='Hispanic'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Missing,patients.csv,One-hot indicator for race_ethnicity='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Other,patients.csv,One-hot indicator for race_ethnicity='Other'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_Unknown,patients.csv,One-hot indicator for race_ethnicity='Unknown'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+race_ethnicity_White,patients.csv,One-hot indicator for race_ethnicity='White'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+language_Missing,patients.csv,One-hot indicator for language='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+language_Other,patients.csv,One-hot indicator for language='Other'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+language_Spanish,patients.csv,One-hot indicator for language='Spanish'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+marital_status_Married,patients.csv,One-hot indicator for marital_status='Married'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+marital_status_Missing,patients.csv,One-hot indicator for marital_status='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+marital_status_Single,patients.csv,One-hot indicator for marital_status='Single'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+marital_status_Widowed,patients.csv,One-hot indicator for marital_status='Widowed'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Commercial,patients.csv,One-hot indicator for insurance_type='Commercial'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_MEDICAID,patients.csv,One-hot indicator for insurance_type='MEDICAID'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_MEDICARE,patients.csv,One-hot indicator for insurance_type='MEDICARE'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Medicaid,patients.csv,One-hot indicator for insurance_type='Medicaid'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Medicare,patients.csv,One-hot indicator for insurance_type='Medicare'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Missing,patients.csv,One-hot indicator for insurance_type='Missing'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_OTHER,patients.csv,One-hot indicator for insurance_type='OTHER'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Other,patients.csv,One-hot indicator for insurance_type='Other'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_SELF-PAY,patients.csv,One-hot indicator for insurance_type='SELF-PAY'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+insurance_type_Self-pay,patients.csv,One-hot indicator for insurance_type='Self-pay'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+urban_rural_Suburban,hospitals.csv,One-hot indicator for urban_rural='Suburban'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+urban_rural_Urban,hospitals.csv,One-hot indicator for urban_rural='Urban'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+ownership_Government,hospitals.csv,One-hot indicator for ownership='Government'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+ownership_Nonprofit,hospitals.csv,One-hot indicator for ownership='Nonprofit'; missing categories labeled Missing; baseline omitted (drop_first=True).,yes,yes
+readmit_30d,train.csv,Binary readmission target; not present in the test dataset.,yes,no

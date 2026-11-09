@@ -39,15 +39,15 @@ sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 # Use your best tuned parameters from Optuna here
 model = LGBMClassifier(
-  n_estimators = 630,
-  learning_rate = 0.026988246341727494,
+  n_estimators = 325,
+  learning_rate = 0.03032819007587418,
   max_depth = 3,
-  num_leaves = 55,
-  min_child_samples = 33,
-  subsample = 0.7045606702099793,
-  colsample_bytree = 0.6580464996795262,
-  reg_alpha = 2.237594823375911,
-  reg_lambda = 0.29046995542878784
+  num_leaves = 23,
+  min_child_samples = 78,
+  subsample = 0.8167383564279809,
+  colsample_bytree = 0.8679495423829078,
+  reg_alpha = 0.016844024235856656,
+  reg_lambda = 0.850463330333345
 )
 
 oof_preds = np.zeros(len(X))
