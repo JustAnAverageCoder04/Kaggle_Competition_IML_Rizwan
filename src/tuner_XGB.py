@@ -45,7 +45,7 @@ def objective(trial):
         "n_jobs": -1
     }
 
-    skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
+    skf = StratifiedGroupKFold(n_splits=10, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(X))
 
     for train_idx, val_idx in skf.split(X, y, groups=train_df["hospital_id"]):
@@ -60,9 +60,9 @@ def objective(trial):
     # Return Out-of-Fold ROC-AUC to be maximized
     return roc_auc_score(y, oof_preds)
 
-print("Starting Optuna study (50 trials)...")
+print("Starting Optuna study (100 trials)...")
 study = optuna.create_study(direction="maximize")
-study.optimize(objective, n_trials=50, show_progress_bar=True)
+study.optimize(objective, n_trials=100, show_progress_bar=True)
 
 print("\n--- Tuning Complete ---")
 print(f"Best OOF ROC-AUC: {study.best_value:.4f}")
@@ -70,5 +70,3 @@ print("Best Hyperparameters:")
 for key, value in study.best_params.items():
     print(f"  {key}: {value}")
 
-# Save best parameters to a dictionary or directly use them in your training script
-best_params = study.best_params

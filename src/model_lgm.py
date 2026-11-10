@@ -29,25 +29,28 @@ X_test = test_df.drop(columns=[id_col, "hospital_id"], errors="ignore")
 X_test = X_test.reindex(columns=X.columns, fill_value=0)
 
 # Filter to numeric/boolean types and handle NaNs
-X = X.select_dtypes(include=[np.number, "bool"]).fillna(-999)
-X_test = X_test.select_dtypes(include=[np.number, "bool"]).fillna(-999)
+""" X = X.select_dtypes(include=[np.number, "bool"]).fillna(-999)
+X_test = X_test.select_dtypes(include=[np.number, "bool"]).fillna(-999) """
+
+X = X.select_dtypes(include=[np.number, "bool"])
+X_test = X_test.select_dtypes(include=[np.number, "bool"])
 
 print(f"Training with StratifiedGroupKFold on {X.shape[1]} features.")
 
-n_splits = 5
+n_splits = 10
 sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-# Use your best tuned parameters from Optuna here
+
 model = LGBMClassifier(
-  n_estimators = 325,
-  learning_rate = 0.03032819007587418,
-  max_depth = 3,
-  num_leaves = 23,
-  min_child_samples = 78,
-  subsample = 0.8167383564279809,
-  colsample_bytree = 0.8679495423829078,
-  reg_alpha = 0.016844024235856656,
-  reg_lambda = 0.850463330333345
+  n_estimators= 330,
+  learning_rate= 0.051986890715877934,
+  max_depth= 3,
+  num_leaves= 48,
+  min_child_samples= 43,
+  subsample= 0.8343846581111447,
+  colsample_bytree= 0.9177557930065428,
+  reg_alpha= 0.05534025004022157,
+  reg_lambda= 0.3180297950852887
 )
 
 oof_preds = np.zeros(len(X))
@@ -69,7 +72,7 @@ for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups=groups)):
 overall_auc = roc_auc_score(y, oof_preds)
 print(f"\nOverall Grouped Out-of-Fold ROC-AUC: {overall_auc:.4f}")
 
-# Save OOF predictions and submission file
+
 np.save(os.path.join(MODELS_DIR, "oof_preds_lgb.npy"), oof_preds)
 submission = pd.DataFrame({
     id_col: test_df[id_col],
