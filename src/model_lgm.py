@@ -47,6 +47,7 @@ model = LGBMClassifier(
   max_depth= 3,
   num_leaves= 48,
   min_child_samples= 43,
+  scale_pos_weight= 9,
   subsample= 0.8343846581111447,
   colsample_bytree= 0.9177557930065428,
   reg_alpha= 0.05534025004022157,

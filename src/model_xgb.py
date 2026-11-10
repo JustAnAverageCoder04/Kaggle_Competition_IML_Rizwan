@@ -47,6 +47,7 @@ model = XGBClassifier(
   max_depth= 3,
   min_child_weight= 7,
   subsample= 0.840519386969552,
+  scale_pos_weight= 9,
   colsample_bytree= 0.6035689739053297,
   reg_alpha= 0.16227203916698177,
   reg_lambda= 0.19243622406543415
