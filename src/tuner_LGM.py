@@ -32,7 +32,7 @@ def objective(trial):
     params = {
         "n_estimators": trial.suggest_int("n_estimators", 200, 800),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.1, log=True),
-        "max_depth": trial.suggest_int("max_depth", -1, 9),
+        "max_depth": trial.suggest_int("max_depth", 3, 9),
         "num_leaves": trial.suggest_int("num_leaves", 15, 63),
         "min_child_samples": trial.suggest_int("min_child_samples", 20, 100),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
